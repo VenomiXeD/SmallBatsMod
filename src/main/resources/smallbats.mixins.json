@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "package": "me.mc.mods.smallbats.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "smallbats.refmap.json",
+  "mixins": [
+    "BatMixin",
+    "BatVampireActionMixin",
+    "LivingEntityMixin",
+    "ModPlayerEventHandlerMixin",
+    "PlayerMixin"
+  ],
+  "client": [
+    "BatRendererMixin",
+    "RenderHandlerMixin"
+  ],
+  "minVersion": "0.8"
+}

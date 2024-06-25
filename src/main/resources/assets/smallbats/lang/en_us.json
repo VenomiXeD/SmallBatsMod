@@ -1,0 +1,5 @@
+{
+    "action.smallbats.batsleep": "Bat sleep",
+    "skill.smallbats.batsleep": "Bat sleeping",
+    "skill.smallbats.batsleep.desc": "Allows sleeping as a bat during daytime."
+}
