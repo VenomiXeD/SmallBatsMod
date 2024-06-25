@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "smallbats.refmap.json",
   "mixins": [
-    "BatMixin",
+    "EntityMixin",
     "BatVampireActionMixin",
     "LivingEntityMixin",
     "ModPlayerEventHandlerMixin",

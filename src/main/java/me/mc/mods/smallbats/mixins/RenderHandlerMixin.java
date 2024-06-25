@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = RenderHandler.class,remap = false)
-public class RenderHandlerMixin {
+public abstract class RenderHandlerMixin {
     private float linearInterpolation(float alpha, float a, float b) {
         return (1-alpha)*a + b*alpha;
     }

@@ -46,7 +46,7 @@ public class BatSleepAction implements ILastingAction<IVampirePlayer> {
             boolean isOnCeiling = ((IVerticalState)player.getRepresentingPlayer()).getIsOnCeiling();
             ModSmallBats.INSTANCE.Logger.info("server-side on ceiling: " + isOnCeiling);
             if (isOnCeiling) {
-                BlockPos pos = player.getRepresentingEntity().blockPosition();
+                BlockPos pos = player.getRepresentingEntity().blockPosition().below();
                 ModSmallBats.INSTANCE.Logger.info("start sleeping");
                 // We can sleep now
                 player.getRepresentingPlayer().startSleeping(pos);
@@ -59,7 +59,7 @@ public class BatSleepAction implements ILastingAction<IVampirePlayer> {
 
     @Override
     public int getDuration(IVampirePlayer player) {
-        return Integer.MAX_VALUE;
+        return 20*10;
     }
 
     @Override

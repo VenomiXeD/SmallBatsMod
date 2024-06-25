@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Optional;
 
 @Mixin(LivingEntity.class)
-public class LivingEntityMixin {
+public abstract class LivingEntityMixin {
     @Inject(method = "getSleepingPos",at = @At("HEAD"), cancellable = true)
     public void getSleepingPos(CallbackInfoReturnable<Optional<BlockPos>> cir) {
         // Obtain the player
