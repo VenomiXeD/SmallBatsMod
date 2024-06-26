@@ -15,16 +15,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @OnlyIn(Dist.CLIENT)
-@Mixin(RenderHandler.class)
+@Mixin(value = RenderHandler.class)
 public abstract class RenderHandlerMixin {
-    @Shadow(remap=false) private @Nullable Bat entityBat;
+    @Shadow(remap = false)
+    private Bat entityBat;
 
-    @Inject(method = "onRenderPlayerPreHigh", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ambient/Bat;setInvisible(Z)V", shift = At.Shift.AFTER), remap = false)
+    @Inject(method = "onRenderPlayerPreHigh", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ambient/Bat;setInvisible(Z)V", shift = At.Shift.AFTER))
     public void onRenderPlayerPreHigh(RenderPlayerEvent.Pre event, CallbackInfo ci) {
         boolean isOnCeiling = ((IVerticalState)event.getEntity()).getIsOnCeiling();
         boolean isOnFloor = ((IVerticalState)event.getEntity()).getIsOnFloor();
 
-        ModSmallBats.INSTANCE.Logger.info("we are rendering the entity");
         // Set its position to resting
         entityBat.setResting(isOnCeiling || isOnFloor);
 
