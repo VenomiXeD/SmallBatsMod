@@ -9,6 +9,7 @@ import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
 
@@ -23,16 +24,21 @@ public class ModSmallBats
     public final Logger Logger = java.util.logging.Logger.getLogger("Mod-Smallbats");
 
 
-    public GameEventHandler GameEventsHandler = new GameEventHandler();
+    public final GameEventHandler GameEventsHandler;
 
     public ModSmallBats() {
         INSTANCE = this;
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.register(this);
-        MinecraftForge.EVENT_BUS.register(GameEventsHandler);
+
+        GameEventsHandler = new GameEventHandler();
 
         SmallBatsVampireSkills.VAMPIRE_SKILLS.register(bus);
         SmallBatsVampireActions.VAMPIRE_ACTIONS.register(bus);
+    }
+    @SubscribeEvent
+    public void onFMLCommonSetupEvent(FMLCommonSetupEvent event) {
+        MinecraftForge.EVENT_BUS.register(GameEventsHandler);
     }
 
     @SubscribeEvent

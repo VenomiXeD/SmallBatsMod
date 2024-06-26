@@ -5,7 +5,6 @@ import de.teamlapen.vampirism.api.entity.player.skills.ISkill;
 import de.teamlapen.vampirism.api.entity.player.vampire.IVampirePlayer;
 import me.mc.mods.smallbats.ModSmallBats;
 import me.mc.mods.smallbats.vampire.skills.BatSleepSkill;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 

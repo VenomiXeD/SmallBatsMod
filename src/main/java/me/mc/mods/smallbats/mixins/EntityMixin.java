@@ -1,17 +1,12 @@
 package me.mc.mods.smallbats.mixins;
 
-import cpw.mods.util.Lazy;
 import me.mc.mods.smallbats.events.VerticalStateChangedEvent;
 import me.mc.mods.smallbats.mixininterfaces.IVerticalState;
-import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeEventFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,13 +16,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Entity.class)
 public abstract class EntityMixin implements IVerticalState {
     private static boolean verticalCollision(Entity e) {
-        Level l = e.level();
-        BlockPos bPos = e.blockPosition().above();
-        BlockState b = l.getBlockState(bPos);
-        if(b.isAir()) {
-            return false;
-        }
-        return e.getDimensions(e.getPose()).makeBoundingBox(e.position()).intersects(b.getCollisionShape(l,bPos).bounds());
+        Vec3 start = e.position().add(0d,e.getBbHeight(),0d);
+        Vec3 end = start.add(0,.01,0);
+        BlockHitResult hitResult = e.level().clip(new ClipContext(start,end,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,e));
+        Vec3 diff = hitResult.getLocation().subtract(start);
+        return diff.y <= .0001f;
     }
     @Unique
     public boolean isOnFloor;
