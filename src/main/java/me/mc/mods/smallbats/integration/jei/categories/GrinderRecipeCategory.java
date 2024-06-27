@@ -1,6 +1,5 @@
 package me.mc.mods.smallbats.integration.jei.categories;
 
-import de.teamlapen.vampirism.api.general.BloodConversionRegistry;
 import de.teamlapen.vampirism.core.ModBlocks;
 import me.mc.mods.smallbats.ModSmallBats;
 import me.mc.mods.smallbats.integration.jei.JEISmallBats;
@@ -21,9 +20,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
     private static ResourceLocation uiLocation = new ResourceLocation(ModSmallBats.MODID,"textures/containers/bloodgrinderrecipe.png");

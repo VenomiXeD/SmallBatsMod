@@ -1,15 +1,11 @@
     package me.mc.mods.smallbats.network;
 
-    import me.mc.mods.smallbats.ModSmallBats;
     import me.mc.mods.smallbats.caps.ISmallBatsBaseCapability;
     import me.mc.mods.smallbats.caps.ISynchronizableCapabilityProvider;
     import net.minecraft.client.Minecraft;
-    import net.minecraft.nbt.CompoundTag;
     import net.minecraft.world.entity.Entity;
-    import net.minecraftforge.common.capabilities.Capability;
     import net.minecraftforge.network.NetworkEvent;
 
-    import java.lang.reflect.InvocationTargetException;
     import java.util.function.Supplier;
 
     public class ClientBoundSynchronizeCapability {

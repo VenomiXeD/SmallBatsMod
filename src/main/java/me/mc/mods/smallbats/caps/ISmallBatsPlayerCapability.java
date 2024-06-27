@@ -1,7 +1,6 @@
 package me.mc.mods.smallbats.caps;
 
 import me.mc.mods.smallbats.network.PacketSynchronizeCapability;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
 public interface ISmallBatsPlayerCapability extends ISmallBatsBaseCapability {

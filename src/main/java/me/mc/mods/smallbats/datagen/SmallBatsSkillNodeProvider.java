@@ -3,7 +3,6 @@ package me.mc.mods.smallbats.datagen;
 import de.teamlapen.vampirism.data.provider.SkillNodeProvider;
 import de.teamlapen.vampirism.data.recipebuilder.FinishedSkillNode;
 import de.teamlapen.vampirism.data.recipebuilder.SkillNodeBuilder;
-import de.teamlapen.vampirism.entity.player.vampire.skills.VampireSkills;
 import me.mc.mods.smallbats.ModSmallBats;
 import me.mc.mods.smallbats.vampire.SmallBatsVampireSkills;
 import net.minecraft.data.CachedOutput;
