@@ -5,18 +5,29 @@ import de.teamlapen.vampirism.api.VampirismAPI;
 import de.teamlapen.vampirism.api.entity.factions.IPlayableFaction;
 import de.teamlapen.vampirism.api.entity.player.actions.ILastingAction;
 import de.teamlapen.vampirism.api.entity.player.vampire.IVampirePlayer;
+import de.teamlapen.vampirism.entity.player.vampire.VampirePlayer;
 import de.teamlapen.vampirism.entity.player.vampire.actions.VampireActions;
+import de.teamlapen.vampirism.util.DamageHandler;
+import de.teamlapen.vampirism.world.ModDamageSources;
+import de.teamlapen.vampirism.world.VampirismWorld;
 import me.mc.mods.smallbats.ModSmallBats;
-import me.mc.mods.smallbats.caps.SmallBatsPlayerCapability;
+import me.mc.mods.smallbats.caps.ISmallBatsPlayerCapability;
+import me.mc.mods.smallbats.caps.ISynchronizableCapabilityProvider;
+import me.mc.mods.smallbats.caps.SmallBatsPlayerCapabilityProvider;
+import me.mc.mods.smallbats.network.PacketSynchronizeCapability;
 import me.mc.mods.smallbats.util.MathUtils;
 import me.mc.mods.smallbats.vampire.SmallBatsVampireActions;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.*;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
@@ -54,7 +65,7 @@ public class MistShapeAction implements ILastingAction<IVampirePlayer> {
 
     @Override
     public String getTranslationKey() {
-        return "skill.smallbats.mist";
+        return "action.smallbats.mist";
     }
 
     @Override
@@ -71,7 +82,8 @@ public class MistShapeAction implements ILastingAction<IVampirePlayer> {
 
     @Override
     public void onActivatedClient(IVampirePlayer player) {
-        ModSmallBats.INSTANCE.Logger.info("side: " + player.getRepresentingPlayer().level().isClientSide());
+        // ModSmallBats.INSTANCE.Logger.info("side: " + player.getRepresentingPlayer().level().isClientSide());
+        player.getRepresentingPlayer().refreshDimensions();;
     }
 
     @Override
@@ -79,6 +91,9 @@ public class MistShapeAction implements ILastingAction<IVampirePlayer> {
         if (!player.isRemote()) {
             Player e = player.getRepresentingPlayer();
             updatePlayer(player, false);
+        }
+        else {
+            player.getRepresentingPlayer().refreshDimensions();;
         }
     }
 
@@ -104,19 +119,33 @@ public class MistShapeAction implements ILastingAction<IVampirePlayer> {
 
                 ((ServerLevel) e.level()).sendParticles(PARTICLE_MISTEFFECT, x, y, z, 1, 0, 0, 0, 0.5f);
             }
+            if (player.getRepresentingPlayer().isAlive() && player.isGettingSundamage(player.getRepresentingPlayer().level())) {
+                VampirePlayer.getOpt(player.getRepresentingPlayer()).ifPresent(vp->vp.onDeath(new ModDamageSources(player.getRepresentingEntity().level().registryAccess()).sunDamage()));
+                return true;
+            }
+        }
+        else {
+            return player.isGettingSundamage(player.getRepresentingEntity().level());
         }
         return false;
     }
 
     void updatePlayer(IVampirePlayer p, boolean activated) {
         Player player = p.getRepresentingPlayer();
-        player.getCapability(SmallBatsPlayerCapability.SMALLBATS_CAP).ifPresent(cap->cap.setIsMist(activated));
+        LazyOptional<ISmallBatsPlayerCapability> cap = player.getCapability(SmallBatsPlayerCapabilityProvider.SMALLBATS_PLAYER_CAP);
+        cap.ifPresent(c->{
+            c.setIsMist(activated);
+        });
+
         //player.syn
 
         player.getAbilities().flying = p.getRepresentingPlayer().isSpectator();
         player.getAbilities().mayfly = activated || p.getRepresentingPlayer().isCreative() || p.getRepresentingPlayer().isSpectator();
         player.getAbilities().mayBuild = !activated;
         player.setForcedPose(activated ? Pose.STANDING : null);
+
+        cap.ifPresent(c->c.sync(player));
+
         player.refreshDimensions();
         player.onUpdateAbilities();
     }

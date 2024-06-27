@@ -1,9 +1,10 @@
 package me.mc.mods.smallbats;
 
-import me.mc.mods.smallbats.caps.SmallBatsPlayerCapability;
+import me.mc.mods.smallbats.caps.SmallBatsPlayerCapabilityProvider;
 import me.mc.mods.smallbats.datagen.SmallBatsSkillNodeProvider;
 import me.mc.mods.smallbats.eventhandler.ClientGameEventHandler;
 import me.mc.mods.smallbats.eventhandler.GameEventHandler;
+import me.mc.mods.smallbats.network.ModSmallBatsNetworking;
 import me.mc.mods.smallbats.vampire.SmallBatsVampireActions;
 import me.mc.mods.smallbats.vampire.SmallBatsVampireSkills;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,6 +30,7 @@ public class ModSmallBats
 
     public final GameEventHandler GameEventsHandler;
     public final ClientGameEventHandler cGameEventsHandler;
+    public ModSmallBatsNetworking Networking;
 
     public ModSmallBats() {
         INSTANCE = this;
@@ -37,6 +39,7 @@ public class ModSmallBats
 
         GameEventsHandler = new GameEventHandler();
         cGameEventsHandler = new ClientGameEventHandler();
+        Networking = new ModSmallBatsNetworking();
 
         SmallBatsVampireSkills.VAMPIRE_SKILLS.register(bus);
         SmallBatsVampireActions.VAMPIRE_ACTIONS.register(bus);
@@ -45,6 +48,8 @@ public class ModSmallBats
     public void onFMLCommonSetupEvent(FMLCommonSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(GameEventsHandler);
         MinecraftForge.EVENT_BUS.register(cGameEventsHandler);
+
+        Networking.register();
     }
 
     @SubscribeEvent
@@ -53,7 +58,7 @@ public class ModSmallBats
 
     @SubscribeEvent
     public void onRegisterCapabilitesEvent(RegisterCapabilitiesEvent event) {
-        event.register(SmallBatsPlayerCapability.class);
+        event.register(SmallBatsPlayerCapabilityProvider.class);
     }
 
     @SubscribeEvent

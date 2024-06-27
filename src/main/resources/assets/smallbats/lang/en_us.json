@@ -2,5 +2,8 @@
     "action.smallbats.batsleep": "Bat sleep",
     "skill.smallbats.batsleep": "Bat sleeping",
     "skill.smallbats.batsleep.desc": "Allows sleeping as a bat during daytime.",
-    "tooltips.smallbats.itembloodvalue": "Blood (mb): %s\nBlood bar (eaten): %s"
+    "action.smallbats.mist": "Shapeshift from/to mist",
+    "skill.smallbats.mistshape": "Mist form",
+    "skill.smallbats.mistshape.desc": "Allows flying as a cloud of mist",
+    "tooltips.smallbats.itembloodvalue": "Blood (mb): %s | Blood bar (eaten): %s"
 }

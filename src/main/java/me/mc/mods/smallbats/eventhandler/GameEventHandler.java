@@ -1,35 +1,28 @@
 package me.mc.mods.smallbats.eventhandler;
 
-import de.teamlapen.lib.lib.util.UtilLib;
 import de.teamlapen.vampirism.api.VampirismAPI;
 import de.teamlapen.vampirism.api.entity.player.vampire.IVampirePlayer;
 import de.teamlapen.vampirism.api.general.BloodConversionRegistry;
 import de.teamlapen.vampirism.entity.player.VampirismPlayerAttributes;
 import de.teamlapen.vampirism.items.VampirismItemBloodFoodItem;
-import me.mc.mods.smallbats.ModSmallBats;
-import me.mc.mods.smallbats.caps.SmallBatsPlayerCapability;
+import me.mc.mods.smallbats.caps.SmallBatsPlayerCapabilityProvider;
 import me.mc.mods.smallbats.events.VerticalStateChangedEvent;
 import me.mc.mods.smallbats.mixininterfaces.IVampirismItemBloodFoodAccessor;
 import me.mc.mods.smallbats.vampire.SmallBatsVampireActions;
 import me.mc.mods.smallbats.vampire.actions.MistShapeAction;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.entity.player.SleepingLocationCheckEvent;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -108,10 +101,10 @@ public class GameEventHandler {
     @SubscribeEvent
     public void onEntityEventSize(EntityEvent.Size e) {
         if (e.getEntity() instanceof Player p) {
-            p.getCapability(SmallBatsPlayerCapability.SMALLBATS_CAP).ifPresent(cap-> {
+            p.getCapability(SmallBatsPlayerCapabilityProvider.SMALLBATS_PLAYER_CAP).resolve().ifPresent(cap -> {
                 if (cap.getIsMist()) {
                     e.setNewSize(MistShapeAction.MIST_DIMENSIONS);
-                    e.setNewEyeHeight(MistShapeAction.MIST_DIMENSIONS.height / 2);
+                    e.setNewEyeHeight(MistShapeAction.MIST_DIMENSIONS.height);
                 }
             });
         }
@@ -121,7 +114,7 @@ public class GameEventHandler {
     public void onAttachCapability(AttachCapabilitiesEvent<Entity> e) {
         // ModSmallBats.INSTANCE.Logger.info("we attach data: " + e.getObject());
         if(e.getObject() instanceof Player) {
-            e.addCapability(SmallBatsPlayerCapability.SMALLBATS_CAP_LOC, new SmallBatsPlayerCapability());
+            e.addCapability(SmallBatsPlayerCapabilityProvider.SMALLBATS_PLAYER_CAP_LOC, new SmallBatsPlayerCapabilityProvider());
         }
     }
 }
