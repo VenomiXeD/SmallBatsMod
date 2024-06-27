@@ -3,11 +3,13 @@ package me.mc.mods.smallbats.vampire.actions;
 import de.teamlapen.vampirism.api.VReference;
 import de.teamlapen.vampirism.api.VampirismAPI;
 import de.teamlapen.vampirism.api.entity.factions.IPlayableFaction;
+import de.teamlapen.vampirism.api.entity.player.actions.IAction;
 import de.teamlapen.vampirism.api.entity.player.actions.ILastingAction;
 import de.teamlapen.vampirism.api.entity.player.vampire.IVampirePlayer;
 import de.teamlapen.vampirism.entity.player.VampirismPlayerAttributes;
 import me.mc.mods.smallbats.mixininterfaces.IVerticalState;
 import me.mc.mods.smallbats.vampire.SmallBatsVampireActions;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -16,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class BatSleepAction implements ILastingAction<IVampirePlayer> {
+public class BatSleepAction implements ILastingAction<IVampirePlayer>, IAction<IVampirePlayer> {
     public static boolean isSleepingAsBat(Player p) {
         LazyOptional<IVampirePlayer> vampirePlayer = VampirismAPI.getVampirePlayer(p);
         if (vampirePlayer.isPresent()) {
@@ -26,8 +28,9 @@ public class BatSleepAction implements ILastingAction<IVampirePlayer> {
     }
     @Override
     public PERM canUse(IVampirePlayer player) {
-        return PERM.ALLOWED;
+        return (player.getRepresentingPlayer().level().isDay() && ((IVerticalState)player.getRepresentingPlayer()).getIsOnCeiling()) ? PERM.ALLOWED : PERM.DISALLOWED;
     }
+
 
     @Override
     public int getCooldown(IVampirePlayer player) {
@@ -89,11 +92,8 @@ public class BatSleepAction implements ILastingAction<IVampirePlayer> {
     @Override
     public boolean onUpdate(IVampirePlayer player) {
         if(!player.getRepresentingPlayer().level().isClientSide()) {
-            if(player.getRepresentingPlayer().level().isDay()) {
-                // ((ServerLevel) player.getRepresentingPlayer().level()).updateSleepingPlayerList();
-            }
             return player.getRepresentingPlayer().level().isNight();
         }
-        return player.getRepresentingPlayer().isShiftKeyDown();
+        return Screen.hasShiftDown();
     }
 }

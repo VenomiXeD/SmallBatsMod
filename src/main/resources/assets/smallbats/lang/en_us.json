@@ -1,5 +1,6 @@
 {
     "action.smallbats.batsleep": "Bat sleep",
     "skill.smallbats.batsleep": "Bat sleeping",
-    "skill.smallbats.batsleep.desc": "Allows sleeping as a bat during daytime."
+    "skill.smallbats.batsleep.desc": "Allows sleeping as a bat during daytime.",
+    "tooltips.smallbats.itembloodvalue": "Blood (mb): %s\nBlood bar (eaten): %s"
 }

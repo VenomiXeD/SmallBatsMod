@@ -1,16 +1,34 @@
 package me.mc.mods.smallbats.eventhandler;
 
+import de.teamlapen.lib.lib.util.UtilLib;
 import de.teamlapen.vampirism.api.VampirismAPI;
 import de.teamlapen.vampirism.api.entity.player.vampire.IVampirePlayer;
+import de.teamlapen.vampirism.api.general.BloodConversionRegistry;
 import de.teamlapen.vampirism.entity.player.VampirismPlayerAttributes;
+import de.teamlapen.vampirism.items.VampirismItemBloodFoodItem;
+import me.mc.mods.smallbats.ModSmallBats;
+import me.mc.mods.smallbats.caps.SmallBatsPlayerCapability;
 import me.mc.mods.smallbats.events.VerticalStateChangedEvent;
+import me.mc.mods.smallbats.mixininterfaces.IVampirismItemBloodFoodAccessor;
 import me.mc.mods.smallbats.vampire.SmallBatsVampireActions;
+import me.mc.mods.smallbats.vampire.actions.MistShapeAction;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.entity.player.SleepingLocationCheckEvent;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
@@ -18,6 +36,7 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+@SuppressWarnings("removal")
 public class GameEventHandler {
     @SubscribeEvent
     public void onSleepingLocationCheckEvent(SleepingLocationCheckEvent e) {
@@ -42,6 +61,7 @@ public class GameEventHandler {
             }
         }
     }
+    /*
     public void onSleepInBed(PlayerSleepInBedEvent e) {
         LazyOptional<IVampirePlayer> vampPlayer = VampirismAPI.getVampirePlayer(e.getEntity());
         if(vampPlayer.isPresent()) {
@@ -49,7 +69,7 @@ public class GameEventHandler {
                 e.setResult(Event.Result.ALLOW);
             }
         }
-    }
+    }*/
 
     // Event priority is high so the event handler is called before vampirism
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -66,6 +86,42 @@ public class GameEventHandler {
                 long dist = ((ServerLevel) event.getLevel()).getDayTime() % 24000L > 12000L ? 13000 : -11000; //Make sure we don't go backwards in time (in special case sleeping at 23500)
                 event.setTimeAddition(event.getNewTime() + dist);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onToolTip(ItemTooltipEvent e) {
+        if(e.getEntity() == null)
+            return;
+        if(VampirismAPI.getVampirePlayer(e.getEntity()).isPresent()) {
+            int blood = BloodConversionRegistry.getImpureBloodValue(e.getItemStack().getItem());
+            int bloodBarsFilledEaten = 0;
+            if ((e.getItemStack().getItem() instanceof VampirismItemBloodFoodItem vampFoodItem)) {
+                bloodBarsFilledEaten = ((IVampirismItemBloodFoodAccessor)vampFoodItem).getVampireFood().getNutrition() / 2;
+            }
+            if (blood>0 && Screen.hasShiftDown()) {
+                e.getToolTip().add(1,Component.translatable("tooltips.smallbats.itembloodvalue",blood,(bloodBarsFilledEaten == 0 ? "-" :  String.valueOf(bloodBarsFilledEaten))).withStyle(ChatFormatting.DARK_RED));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityEventSize(EntityEvent.Size e) {
+        if (e.getEntity() instanceof Player p) {
+            p.getCapability(SmallBatsPlayerCapability.SMALLBATS_CAP).ifPresent(cap-> {
+                if (cap.getIsMist()) {
+                    e.setNewSize(MistShapeAction.MIST_DIMENSIONS);
+                    e.setNewEyeHeight(MistShapeAction.MIST_DIMENSIONS.height / 2);
+                }
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public void onAttachCapability(AttachCapabilitiesEvent<Entity> e) {
+        // ModSmallBats.INSTANCE.Logger.info("we attach data: " + e.getObject());
+        if(e.getObject() instanceof Player) {
+            e.addCapability(SmallBatsPlayerCapability.SMALLBATS_CAP_LOC, new SmallBatsPlayerCapability());
         }
     }
 }

@@ -28,13 +28,15 @@ public class SmallBatsSkillNodeProvider extends SkillNodeProvider {
 
     @Override
     public @NotNull String getName() {
-        return "BatSleepModSkillNodeProvider";
+        return "SmallBatsSkillNodeProvider";
     }
 
     @Override
     protected void registerSkillNodes(@NotNull Consumer<FinishedSkillNode> consumer) {
-        System.out.println(VampireSkills.FLEDGLING.getId());
-        SkillNodeBuilder.vampire(new ResourceLocation("vampirism","vampire/skill4"), SmallBatsVampireSkills.BATSLEEP_SKILL.get()).build(consumer,new ResourceLocation(ModSmallBats.MODID,"batsleep"));
+        // Depends on fledgling
+        SkillNodeBuilder.vampire(new ResourceLocation("vampirism","vampire/skill4"), SmallBatsVampireSkills.BATSLEEP_SKILL.get()).build(consumer, new ResourceLocation(ModSmallBats.MODID,"batsleep"));
+        // Depends on invisibility
+        SkillNodeBuilder.vampire(new ResourceLocation("vampirism","vampire/util6"), SmallBatsVampireSkills.MISTSHAPE_SKILL.get()).build(consumer, new ResourceLocation(ModSmallBats.MODID,"mistform"));
     }
 
     @Override

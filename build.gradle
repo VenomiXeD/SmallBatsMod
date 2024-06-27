@@ -260,19 +260,25 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
-tasks.register("deletePreviousResources") {
-    println "Deleting previous generated resources"
-    delete fileTree("src/generated") {
-        include "**/*"
-    }
-    doLast {
-        file("src/generated").mkdirs()
-    }
-}
-
-tasks.withType(JavaExec).configureEach {
-    println name
-    if (name == "runData") {
-        dependsOn(tasks.named("deletePreviousResources"))
-    }
-}
+// tasks.register("deletePreviousResources") {
+//     println "Deleting previous generated resources"
+//     delete fileTree("src/generated") {
+//         include "**/*"
+//     }
+//     doLast {
+//         file("src/generated").mkdirs()
+//     }
+// }
+//
+// tasks.withType(JavaExec).configureEach {
+//     println name
+//     if (name == "runData") {
+//         dependsOn(tasks.named("deletePreviousResources"))
+//         doLast {
+//             copy {
+//                 from "src/generated/resources"
+//                 into "src/main/resources"
+//             }
+//         }
+//     }
+// }
