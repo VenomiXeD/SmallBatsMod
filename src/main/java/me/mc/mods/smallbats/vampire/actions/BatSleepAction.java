@@ -28,7 +28,7 @@ public class BatSleepAction implements ILastingAction<IVampirePlayer>, IAction<I
     }
     @Override
     public PERM canUse(IVampirePlayer player) {
-        return (player.getRepresentingPlayer().level().isDay() && ((IVerticalState)player.getRepresentingPlayer()).getIsOnCeiling()) ? PERM.ALLOWED : PERM.DISALLOWED;
+        return (player.getRepresentingPlayer().level().isDay() && ((IVerticalState)player.getRepresentingPlayer()).getIsOnCeiling(true)) ? PERM.ALLOWED : PERM.DISALLOWED;
     }
 
 
@@ -50,7 +50,7 @@ public class BatSleepAction implements ILastingAction<IVampirePlayer>, IAction<I
     @Override
     public boolean onActivated(IVampirePlayer player, ActivationContext context) {
         if (VampirismPlayerAttributes.get(player.getRepresentingPlayer()).getVampSpecial().bat && player.getRepresentingPlayer().level().isDay()) {
-            boolean isOnCeiling = ((IVerticalState)player.getRepresentingPlayer()).getIsOnCeiling();
+            boolean isOnCeiling = ((IVerticalState)player.getRepresentingPlayer()).getIsOnCeiling(true);
             //ModSmallBats.INSTANCE.Logger.info("server-side on ceiling: " + isOnCeiling);
             if (isOnCeiling) {
                 BlockPos pos = player.getRepresentingEntity().blockPosition();

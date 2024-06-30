@@ -7,6 +7,9 @@ public interface ISmallBatsPlayerCapability extends ISmallBatsBaseCapability {
     public boolean getIsMist();
     public void setIsMist(boolean mist);
 
+    public boolean getIsCeilingHanging();
+    public void setIsCeilingHanging(boolean isHanging);
+
     public default void sync(Entity thisCapBelongsToThisEntityToSync) {
         PacketSynchronizeCapability.dispatchCapabilitySynchronization(this.serializerNBT(), this.getUnderlyingCapabilityProvider(), thisCapBelongsToThisEntityToSync);
     }

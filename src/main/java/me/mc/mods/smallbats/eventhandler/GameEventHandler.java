@@ -41,17 +41,29 @@ public class GameEventHandler {
 
     @SubscribeEvent
     public void onVerticalStateChangedEvent(VerticalStateChangedEvent e) {
-        if(e.entity instanceof Player player && e.entity.level().isClientSide())  {
-            if(e.justTookOffFromCeiling && VampirismPlayerAttributes.get(player).getVampSpecial().bat) {
-                e.entity.level().playLocalSound(
-                        e.entity.blockPosition(),
-                        SoundEvents.BAT_TAKEOFF,
-                        SoundSource.PLAYERS,
-                        .5f,
-                        Mth.lerp(e.entity.level().random.nextFloat(),.9f,1.1f),
-                        false
-                );
+        if(e.entity instanceof Player player) {
+            if (e.entity.level().isClientSide()) {
+                if (e.justTookOffFromCeiling && VampirismPlayerAttributes.get(player).getVampSpecial().bat) {
+                    e.entity.level().playSound(player,
+                            e.entity.blockPosition(),
+                            SoundEvents.BAT_TAKEOFF,
+                            SoundSource.PLAYERS,
+                            .5f,
+                            Mth.lerp(e.entity.level().random.nextFloat(), .9f, 1.1f)
+                    );
+                }
             }
+            /*else {
+                player.getCapability(SmallBatsPlayerCapabilityProvider.SMALLBATS_PLAYER_CAP).ifPresent(cap->{
+                        if (e.justTookOffFromCeiling) {
+                            cap.setIsCeilingHanging(false);
+                        }
+                        if (e.justLandedOnCeiling){
+                            cap.setIsCeilingHanging(true);
+                        }
+                        cap.sync(player);
+                });
+            }*/
         }
     }
     /*

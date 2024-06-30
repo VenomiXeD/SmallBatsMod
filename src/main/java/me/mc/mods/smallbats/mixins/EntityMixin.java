@@ -16,7 +16,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements IVerticalState {
-    private static boolean verticalCollision(Entity e) {
+    @Unique
+    private static boolean mod_1_20_1_smallbats$verticalCollision(Entity e) {
         if (e.level().getBlockState(e.blockPosition().above(Mth.floor(e.getBbHeight())+1)).isAir()) {
             return false;
         }
@@ -47,6 +48,11 @@ public abstract class EntityMixin implements IVerticalState {
     }
 
     @Override
+    public boolean getIsOnCeiling(boolean newRayCheck) {
+        return this.isOnCeiling || (newRayCheck && mod_1_20_1_smallbats$verticalCollision(((Entity)(Object)this)));
+    }
+
+    @Override
     public boolean getIsOnFloor() {
         return this.isOnFloor;
     }
@@ -58,7 +64,7 @@ public abstract class EntityMixin implements IVerticalState {
         // We need a custom vertical collision system for (UP) direction
 
         // Check if it is "hanging" upside down
-        if(verticalCollision(e) && !e.onGround()) {
+        if(mod_1_20_1_smallbats$verticalCollision(e) && !e.onGround()) {
             verticalState.setIsOnCeiling(true);
         }
         // Check if it is on floor
@@ -68,7 +74,7 @@ public abstract class EntityMixin implements IVerticalState {
 
         // Reset those states
         if (e.getDeltaMovement().y<0 || e.getDeltaMovement().y>=0.5) {
-            if (verticalState.getIsOnCeiling()) {
+            if (verticalState.getIsOnCeiling(true)) {
                 MinecraftForge.EVENT_BUS.post(
                         new VerticalStateChangedEvent(
                                 false,
