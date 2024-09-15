@@ -7,7 +7,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.teamlapen.vampirism.client.renderer.entity.layers.VampirePlayerHeadLayer;
 import de.teamlapen.vampirism.config.VampirismConfig;
 import de.teamlapen.vampirism.entity.player.VampirismPlayerAttributes;
-import net.minecraft.client.Minecraft;
+import me.mc.mods.smallbats.ModSmallBats;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -19,24 +19,21 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = VampirePlayerHeadLayer.class)
+@Mixin(value = VampirePlayerHeadLayer.class, remap = false, priority = Integer.MAX_VALUE)
 // @OnlyIn(Dist.CLIENT)
 public abstract class VampirePlayerHeadLayerMixin {
-    // @Final
-    // @Shadow
-    // private ResourceLocation[] eyeOverlays;
-//
-    // @Final
-    // @Shadow
-    // private ResourceLocation[] fangOverlays;
+    static {
+        ModSmallBats.INSTANCE.Logger.info("Player Head Layer Mixin overwrite");
+    }
 
-    @Shadow(remap = false) @Final private ResourceLocation @NotNull [] fangOverlays;
+    @Shadow(remap = false)
+    @Final
+    private ResourceLocation @NotNull [] fangOverlays;
 
-    @Shadow(remap = false) @Final private ResourceLocation @NotNull [] eyeOverlays;
+    @Shadow(remap = false)
+    @Final
+    private ResourceLocation @NotNull [] eyeOverlays;
 
     // @Unique
     // private VampirismPlayerAttributes mod_1_20_1_smallbats$getVampirismPlayerAtts(Player p) {
@@ -52,13 +49,19 @@ public abstract class VampirePlayerHeadLayerMixin {
     // }
 
 
-    @Inject(
+    /*@Inject(
             method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/entity/player/Player;FFFFFF)V",
             at = @At("HEAD"),
             cancellable = true,
             remap = false
-    )
-    public <T extends Player> void render(@NotNull PoseStack stack, @NotNull MultiBufferSource iRenderTypeBuffer, int i, @NotNull T player, float v, float v1, float v2, float v3, float v4, float v5, CallbackInfo ci) {
+    )*/
+
+    /**
+     * @author VenomiZeD
+     * @reason New more compatible render system
+     */
+    @Overwrite
+    public <T extends Player> void render(@NotNull PoseStack stack, @NotNull MultiBufferSource iRenderTypeBuffer, int i, @NotNull T player, float v, float v1, float v2, float v3, float v4, float v5) {
         if (!VampirismConfig.CLIENT.renderVampireEyes.get() || !player.isAlive()) return;
         VampirismPlayerAttributes atts = VampirismPlayerAttributes.get(player);
         if (atts.vampireLevel > 0 && !atts.getVampSpecial().disguised && !player.isInvisible()) {
@@ -67,32 +70,33 @@ public abstract class VampirePlayerHeadLayerMixin {
             RenderType eyeRenderType = atts.getVampSpecial().glowingEyes ? RenderType.eyes(eyeOverlays[eyeType]) : RenderType.entityCutoutNoCull(eyeOverlays[eyeType]);
 
             VertexConsumer vertexBuilderEye = iRenderTypeBuffer.getBuffer(eyeRenderType);
-            VertexConsumer vertexBuilderFang =   iRenderTypeBuffer.getBuffer(RenderType.entityCutoutNoCull(fangOverlays[fangType]));
+            VertexConsumer vertexBuilderFang = iRenderTypeBuffer.getBuffer(RenderType.entityCutoutNoCull(fangOverlays[fangType]));
 
             int packerOverlay = LivingEntityRenderer.getOverlayCoords(player, 0);
             ModelPart head = ((VampirePlayerHeadLayer<?, ?>) (Object) this).getParentModel().head;
 
 
             RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            RenderSystem.disableDepthTest();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            // RenderSystem.disableDepthTest();
 
-            RenderSystem.setShaderTexture(0,fangOverlays[fangType]);
+            RenderSystem.setShaderTexture(0, fangOverlays[fangType]);
             head.render(stack, vertexBuilderFang, i, packerOverlay);
 
 
             RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            RenderSystem.disableDepthTest();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            // RenderSystem.disableDepthTest();
 
-            RenderSystem.setShaderTexture(0,eyeOverlays[eyeType]);
+            RenderSystem.setShaderTexture(0, eyeOverlays[eyeType]);
             head.render(stack, vertexBuilderEye, i, packerOverlay);
 
 
             // vv latest change vv
             RenderSystem.enableBlend();
-            // RenderSystem.enableDepthTest();
+            RenderSystem.disableDepthTest();
         }
-        ci.cancel();
+        // ci.cancel();
     }
 }
+
