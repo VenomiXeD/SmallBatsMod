@@ -1,20 +1,14 @@
 package me.mc.mods.smallbats.mixins;
 
 import de.teamlapen.vampirism.client.renderer.RenderHandler;
-import me.mc.mods.smallbats.caps.ISmallBatsPlayerCapability;
-import me.mc.mods.smallbats.caps.SmallBatsPlayerCapabilityProvider;
 import me.mc.mods.smallbats.mixininterfaces.IVerticalState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;

@@ -14,7 +14,6 @@ import me.mc.mods.smallbats.util.MathUtils;
 import me.mc.mods.smallbats.vampire.SmallBatsVampireActions;
 import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
