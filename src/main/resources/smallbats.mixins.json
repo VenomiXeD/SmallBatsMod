@@ -5,6 +5,7 @@
   "refmap": "smallbats.refmap.json",
   "mixins": [
     "BatVampireActionMixin",
+    "BlockBehaviorBlockStateBaseMixin",
     "EntityMixin",
     "LivingEntityMixin",
     "ModPlayerEventHandlerMixin",

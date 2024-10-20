@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(value = VampirePlayerHeadLayer.class, remap = false, priority = Integer.MAX_VALUE)
 // @OnlyIn(Dist.CLIENT)
 public abstract class VampirePlayerHeadLayerMixin {
+
     static {
         ModSmallBats.INSTANCE.Logger.info("Player Head Layer Mixin overwrite");
     }

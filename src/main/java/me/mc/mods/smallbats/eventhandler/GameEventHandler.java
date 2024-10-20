@@ -1,10 +1,12 @@
 package me.mc.mods.smallbats.eventhandler;
 
 import de.teamlapen.vampirism.api.VampirismAPI;
+import de.teamlapen.vampirism.api.VampirismRegistries;
 import de.teamlapen.vampirism.api.entity.player.vampire.IVampirePlayer;
 import de.teamlapen.vampirism.api.general.BloodConversionRegistry;
 import de.teamlapen.vampirism.entity.player.VampirismPlayerAttributes;
 import de.teamlapen.vampirism.items.VampirismItemBloodFoodItem;
+import de.teamlapen.vampirism.world.ModDamageSources;
 import me.mc.mods.smallbats.caps.SmallBatsPlayerCapabilityProvider;
 import me.mc.mods.smallbats.events.VerticalStateChangedEvent;
 import me.mc.mods.smallbats.mixininterfaces.IVampirismItemBloodFoodAccessor;
@@ -22,6 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.SleepingLocationCheckEvent;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
@@ -53,28 +56,8 @@ public class GameEventHandler {
                     );
                 }
             }
-            /*else {
-                player.getCapability(SmallBatsPlayerCapabilityProvider.SMALLBATS_PLAYER_CAP).ifPresent(cap->{
-                        if (e.justTookOffFromCeiling) {
-                            cap.setIsCeilingHanging(false);
-                        }
-                        if (e.justLandedOnCeiling){
-                            cap.setIsCeilingHanging(true);
-                        }
-                        cap.sync(player);
-                });
-            }*/
         }
     }
-    /*
-    public void onSleepInBed(PlayerSleepInBedEvent e) {
-        LazyOptional<IVampirePlayer> vampPlayer = VampirismAPI.getVampirePlayer(e.getEntity());
-        if(vampPlayer.isPresent()) {
-            if (vampPlayer.resolve().get().getActionHandler().isActionActive(SmallBatsVampireActions.BATSLEEP.get())) {
-                e.setResult(Event.Result.ALLOW);
-            }
-        }
-    }*/
 
     // Event priority is high so the event handler is called before vampirism
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -93,7 +76,10 @@ public class GameEventHandler {
             }
         }
     }
-
+    @SubscribeEvent
+    public void onPlayerDamage(LivingDamageEvent e) {
+        // TODO: implement damage handling mist and is holy water (idk what should happen)
+    }
     @SubscribeEvent
     public void onToolTip(ItemTooltipEvent e) {
         if(e.getEntity() == null)

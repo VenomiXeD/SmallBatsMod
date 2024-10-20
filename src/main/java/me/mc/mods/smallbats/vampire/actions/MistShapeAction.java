@@ -13,7 +13,9 @@ import me.mc.mods.smallbats.caps.SmallBatsPlayerCapabilityProvider;
 import me.mc.mods.smallbats.util.MathUtils;
 import me.mc.mods.smallbats.vampire.SmallBatsVampireActions;
 import net.minecraft.core.particles.DustColorTransitionOptions;
+import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
@@ -26,7 +28,7 @@ import java.util.Optional;
 
 public class MistShapeAction implements ILastingAction<IVampirePlayer> {
 
-    public static final EntityDimensions MIST_DIMENSIONS = EntityDimensions.fixed(0.05f,0.05f);
+    public static final EntityDimensions MIST_DIMENSIONS = EntityDimensions.fixed(0.25f,0.25f);
     private DustColorTransitionOptions PARTICLE_MISTEFFECT = new DustColorTransitionOptions(
             new Vector3f(0.22f,0.22f,0.22f),
             new Vector3f(0.15f,0.15f,0.15f),
@@ -108,12 +110,19 @@ public class MistShapeAction implements ILastingAction<IVampirePlayer> {
                 double y = particlePos.y;
                 double z = particlePos.z;
 
-                ((ServerLevel) e.level()).sendParticles(PARTICLE_MISTEFFECT, x, y, z, 1, 0, 0, 0, 0.5f);
+                ClientboundLevelParticlesPacket particlesPacket = new ClientboundLevelParticlesPacket(PARTICLE_MISTEFFECT, true, x, y, z, 1f, 1f, 1f, 1f, 1);
+                for (Player p : e.level().players()) {
+                    if (!p.is(e)) {
+                        ((ServerPlayer)p).connection.send(particlesPacket);
+                    }
+                }
             }
             if (player.getRepresentingPlayer().isAlive() && player.isGettingSundamage(player.getRepresentingPlayer().level())) {
                 VampirePlayer.getOpt(player.getRepresentingPlayer()).ifPresent(vp->vp.onDeath(new ModDamageSources(player.getRepresentingEntity().level().registryAccess()).sunDamage()));
                 return true;
             }
+
+
         }
         else {
             return player.isGettingSundamage(player.getRepresentingEntity().level());
