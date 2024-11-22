@@ -13,7 +13,6 @@
     "VampirismItemBloodFoodItemMixin"
   ],
   "client": [
-    "BatRendererMixin",
     "RenderHandlerMixin",
     "VampirePlayerHeadLayerMixin"
   ],

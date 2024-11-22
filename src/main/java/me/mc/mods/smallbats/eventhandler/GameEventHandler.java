@@ -97,7 +97,7 @@ public class GameEventHandler {
     @SubscribeEvent
     public void onEntityEventSize(EntityEvent.Size e) {
         if (e.getEntity() instanceof Player p) {
-            p.getCapability(SmallBatsPlayerCapabilityProvider.SMALLBATS_PLAYER_CAP).resolve().ifPresent(cap -> {
+            p.getCapability(SmallBatsPlayerCapabilityProvider.SMALLBATS_PLAYER_CAP).ifPresent(cap -> {
                 if (cap.getIsMist()) {
                     e.setNewSize(MistShapeAction.MIST_DIMENSIONS);
                     e.setNewEyeHeight(MistShapeAction.MIST_DIMENSIONS.height);

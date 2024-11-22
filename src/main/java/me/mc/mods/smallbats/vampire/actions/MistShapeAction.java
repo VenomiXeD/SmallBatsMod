@@ -12,6 +12,8 @@ import me.mc.mods.smallbats.caps.ISmallBatsPlayerCapability;
 import me.mc.mods.smallbats.caps.SmallBatsPlayerCapabilityProvider;
 import me.mc.mods.smallbats.util.MathUtils;
 import me.mc.mods.smallbats.vampire.SmallBatsVampireActions;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,7 +30,7 @@ import java.util.Optional;
 public class MistShapeAction implements ILastingAction<IVampirePlayer> {
 
     public static final EntityDimensions MIST_DIMENSIONS = EntityDimensions.fixed(0.25f,0.25f);
-    private DustColorTransitionOptions PARTICLE_MISTEFFECT = new DustColorTransitionOptions(
+    public static final DustColorTransitionOptions PARTICLE_MISTEFFECT = new DustColorTransitionOptions(
             new Vector3f(0.22f,0.22f,0.22f),
             new Vector3f(0.15f,0.15f,0.15f),
             2
@@ -81,7 +83,7 @@ public class MistShapeAction implements ILastingAction<IVampirePlayer> {
     @Override
     public void onDeactivated(IVampirePlayer player) {
         if (!player.isRemote()) {
-            Player e = player.getRepresentingPlayer();
+            // Player e = player.getRepresentingPlayer();
             updatePlayer(player, false);
         }
         else {
@@ -101,8 +103,9 @@ public class MistShapeAction implements ILastingAction<IVampirePlayer> {
 
     @Override
     public boolean onUpdate(IVampirePlayer player) {
+        /*
         Player e = player.getRepresentingPlayer();
-        if(!player.isRemote()) {
+        if (!e.level().isClientSide()) {
             for (int i = 0; i < 50; i++) {
                 Vec3 particlePos = MathUtils.randomSpherePositions(e.level().getRandom(), e.position(), 0.5f);
                 double x = particlePos.x;
@@ -112,19 +115,27 @@ public class MistShapeAction implements ILastingAction<IVampirePlayer> {
                 ClientboundLevelParticlesPacket particlesPacket = new ClientboundLevelParticlesPacket(PARTICLE_MISTEFFECT, true, x, y, z, 1f, 1f, 1f, 1f, 1);
                 for (Player p : e.level().players()) {
                     if (!p.is(e)) {
-                        ((ServerPlayer)p).connection.send(particlesPacket);
+                        ((ServerPlayer) p).connection.send(particlesPacket);
                     }
                 }
             }
-            if (player.getRepresentingPlayer().isAlive() && player.isGettingSundamage(player.getRepresentingPlayer().level())) {
-                VampirePlayer.getOpt(player.getRepresentingPlayer()).ifPresent(vp->vp.onDeath(new ModDamageSources(player.getRepresentingEntity().level().registryAccess()).sunDamage()));
-                return true;
-            }
-
-
         }
         else {
-            return player.isGettingSundamage(player.getRepresentingEntity().level());
+            // Minecraft should be available here
+            if(!Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+                Vec3 particlePos = MathUtils.randomSpherePositions(e.level().getRandom(), e.position(), 0.5f);
+                double x = particlePos.x;
+                double y = particlePos.y;
+                double z = particlePos.z;
+
+
+                e.level().addParticle(PARTICLE_MISTEFFECT, x, y, z, 0, 0, 0);
+            }
+        }
+        */
+        if (player.isGettingSundamage(player.getRepresentingPlayer().level())) {
+            updatePlayer(player, false);
+            return true;
         }
         return false;
     }

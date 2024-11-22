@@ -23,6 +23,7 @@ public abstract class BlockBehaviorBlockStateBaseMixin {
     @Shadow public abstract boolean isCollisionShapeFullBlock(BlockGetter pLevel, BlockPos pPos);
 
     private static final VoxelShape NoCollision = Shapes.empty();
+
     @Inject(method = "getCollisionShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;", at = @At("RETURN"), cancellable = true)
     public void getCollisionShape(BlockGetter pLevel, BlockPos pPos, CollisionContext pContext, CallbackInfoReturnable<VoxelShape> cir) {
         if (pContext instanceof EntityCollisionContext) {

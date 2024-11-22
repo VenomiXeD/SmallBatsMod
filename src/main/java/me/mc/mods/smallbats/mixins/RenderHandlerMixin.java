@@ -42,7 +42,7 @@ public abstract class RenderHandlerMixin {
     @Inject(method = "onRenderPlayerPreHigh", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ambient/Bat;setInvisible(Z)V", shift = At.Shift.AFTER))
     public void onRenderPlayerPreHigh(RenderPlayerEvent.Pre event, CallbackInfo ci) {
         boolean isOnCeiling = ((IVerticalState)event.getEntity()).getIsOnCeiling(true);
-        boolean isOnFloor = ((IVerticalState)event.getEntity()).getIsOnFloor();
+        // boolean isOnFloor = ((IVerticalState)event.getEntity()).getIsOnFloor();
 
         //boolean synchronizedIsOnCeiling = false;
         //LazyOptional<ISmallBatsPlayerCapability> c = event.getEntity().getCapability(SmallBatsPlayerCapabilityProvider.SMALLBATS_PLAYER_CAP);
@@ -50,10 +50,10 @@ public abstract class RenderHandlerMixin {
         //    synchronizedIsOnCeiling = c.resolve().get().getIsCeilingHanging();
         //}
         // Set its position to resting
-        entityBat.setResting(isOnCeiling || isOnFloor);
+         entityBat.setResting(isOnCeiling);
 
         ((IVerticalState)entityBat).setIsOnCeiling(isOnCeiling);
-        ((IVerticalState)entityBat).setIsOnFloor(isOnFloor);
+        // ((IVerticalState)entityBat).setIsOnFloor(isOnFloor);
         // Flip look values
         /*
         if (isOnFloor) {
@@ -63,8 +63,8 @@ public abstract class RenderHandlerMixin {
             entityBat.yBodyRot += Mth.PI;
             entityBat.yBodyRotO += Mth.PI;
 
-            entityBat.yHeadRot += Mth.PI;
-            entityBat.yHeadRotO += Mth.PI;
+            //entityBat.yHeadRot += Mth.PI;
+            //entityBat.yHeadRotO += Mth.PI;
         }
     }
 
