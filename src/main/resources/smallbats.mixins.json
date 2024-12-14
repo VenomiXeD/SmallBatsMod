@@ -13,8 +13,7 @@
     "VampirismItemBloodFoodItemMixin"
   ],
   "client": [
-    "RenderHandlerMixin",
-    "VampirePlayerHeadLayerMixin"
+    "RenderHandlerMixin"
   ],
   "minVersion": "0.8"
 }

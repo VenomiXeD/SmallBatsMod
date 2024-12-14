@@ -47,6 +47,7 @@ public class ClientGameEventHandler {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onHandRenderEVent(RenderHandEvent e) {
         if (MistShapeAction.isMistShape(Minecraft.getInstance().player)) {

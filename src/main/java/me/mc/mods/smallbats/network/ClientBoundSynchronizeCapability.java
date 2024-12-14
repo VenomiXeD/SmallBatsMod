@@ -1,12 +1,12 @@
     package me.mc.mods.smallbats.network;
 
-    import me.mc.mods.smallbats.caps.ISmallBatsBaseCapability;
-    import me.mc.mods.smallbats.caps.ISynchronizableCapabilityProvider;
-    import net.minecraft.client.Minecraft;
-    import net.minecraft.world.entity.Entity;
-    import net.minecraftforge.network.NetworkEvent;
+	import me.mc.mods.smallbats.caps.ISmallBatsBaseCapability;
+	import me.mc.mods.smallbats.caps.ISynchronizableCapabilityProvider;
+	import net.minecraft.client.Minecraft;
+	import net.minecraft.world.entity.Entity;
+	import net.minecraftforge.network.NetworkEvent;
 
-    import java.util.function.Supplier;
+	import java.util.function.Supplier;
 
     public class ClientBoundSynchronizeCapability {
         public static void handle(PacketSynchronizeCapability msg, Supplier<NetworkEvent.Context> ctx) {
