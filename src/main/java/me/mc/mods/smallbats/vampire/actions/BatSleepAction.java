@@ -7,7 +7,7 @@ import de.teamlapen.vampirism.api.entity.player.actions.IAction;
 import de.teamlapen.vampirism.api.entity.player.actions.ILastingAction;
 import de.teamlapen.vampirism.api.entity.player.vampire.IVampirePlayer;
 import de.teamlapen.vampirism.entity.player.VampirismPlayerAttributes;
-import me.mc.mods.smallbats.mixininterfaces.IVerticalState;
+import me.mc.mods.smallbats.util.VerticalCollisionUtil;
 import me.mc.mods.smallbats.vampire.SmallBatsVampireActions;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -28,7 +28,7 @@ public class BatSleepAction implements ILastingAction<IVampirePlayer>, IAction<I
     }
     @Override
     public PERM canUse(IVampirePlayer player) {
-        return (player.getRepresentingPlayer().level().isDay() && ((IVerticalState)player.getRepresentingPlayer()).getIsOnCeiling(true)) ? PERM.ALLOWED : PERM.DISALLOWED;
+        return player.getRepresentingPlayer().level().isDay() && VerticalCollisionUtil.verticalCollisionUp(player.getRepresentingEntity()) ? PERM.ALLOWED : PERM.DISALLOWED;
     }
 
 
@@ -50,12 +50,10 @@ public class BatSleepAction implements ILastingAction<IVampirePlayer>, IAction<I
     @Override
     public boolean onActivated(IVampirePlayer player, ActivationContext context) {
         if (VampirismPlayerAttributes.get(player.getRepresentingPlayer()).getVampSpecial().bat && player.getRepresentingPlayer().level().isDay()) {
-            boolean isOnCeiling = ((IVerticalState)player.getRepresentingPlayer()).getIsOnCeiling(true);
-            //ModSmallBats.INSTANCE.Logger.info("server-side on ceiling: " + isOnCeiling);
+            boolean isOnCeiling = VerticalCollisionUtil.verticalCollisionUp(player.getRepresentingEntity());
+
             if (isOnCeiling) {
                 BlockPos pos = player.getRepresentingEntity().blockPosition();
-                //ModSmallBats.INSTANCE.Logger.info("start sleeping");
-                // We can sleep now
                 player.getRepresentingPlayer().startSleeping(pos);
                 ((ServerLevel)player.getRepresentingPlayer().level()).updateSleepingPlayerList();
                 return true;

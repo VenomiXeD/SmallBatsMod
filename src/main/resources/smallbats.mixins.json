@@ -6,7 +6,6 @@
   "mixins": [
     "BatVampireActionMixin",
     "BlockBehaviorBlockStateBaseMixin",
-    "EntityMixin",
     "LivingEntityMixin",
     "ModPlayerEventHandlerMixin",
     "PlayerMixin",

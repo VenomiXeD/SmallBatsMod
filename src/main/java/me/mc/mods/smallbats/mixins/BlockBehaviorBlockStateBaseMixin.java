@@ -2,14 +2,17 @@ package me.mc.mods.smallbats.mixins;
 
 import me.mc.mods.smallbats.vampire.actions.MistShapeAction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.Tags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,6 +24,8 @@ public abstract class BlockBehaviorBlockStateBaseMixin {
     @Shadow public abstract VoxelShape getCollisionShape(BlockGetter pLevel, BlockPos pPos);
 
     @Shadow public abstract boolean isCollisionShapeFullBlock(BlockGetter pLevel, BlockPos pPos);
+
+    @Shadow public abstract boolean is(TagKey<Block> pTag);
 
     private static final VoxelShape NoCollision = Shapes.empty();
 

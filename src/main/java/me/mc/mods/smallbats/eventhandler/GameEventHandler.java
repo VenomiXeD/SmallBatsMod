@@ -6,7 +6,6 @@ import de.teamlapen.vampirism.api.general.BloodConversionRegistry;
 import de.teamlapen.vampirism.entity.player.VampirismPlayerAttributes;
 import de.teamlapen.vampirism.items.VampirismItemBloodFoodItem;
 import me.mc.mods.smallbats.caps.SmallBatsPlayerCapabilityProvider;
-import me.mc.mods.smallbats.events.VerticalStateChangedEvent;
 import me.mc.mods.smallbats.mixininterfaces.IVampirismItemBloodFoodAccessor;
 import me.mc.mods.smallbats.vampire.SmallBatsVampireActions;
 import me.mc.mods.smallbats.vampire.actions.MistShapeAction;
@@ -35,25 +34,7 @@ public class GameEventHandler {
     @SubscribeEvent
     public void onSleepingLocationCheckEvent(SleepingLocationCheckEvent e) {
         if (e.getEntity() instanceof Player player) {
-            // ModSmallBats.INSTANCE.Logger.info("checking if player may sleep");
             e.setResult(VampirismPlayerAttributes.get(player).getVampSpecial().bat ? Event.Result.ALLOW : Event.Result.DEFAULT);
-        }
-    }
-
-    @SubscribeEvent
-    public void onVerticalStateChangedEvent(VerticalStateChangedEvent e) {
-        if(e.entity instanceof Player player) {
-            if (e.entity.level().isClientSide()) {
-                if (e.justTookOffFromCeiling && VampirismPlayerAttributes.get(player).getVampSpecial().bat) {
-                    e.entity.level().playSound(player,
-                            e.entity.blockPosition(),
-                            SoundEvents.BAT_TAKEOFF,
-                            SoundSource.PLAYERS,
-                            .5f,
-                            Mth.lerp(e.entity.level().random.nextFloat(), .9f, 1.1f)
-                    );
-                }
-            }
         }
     }
 
@@ -78,21 +59,6 @@ public class GameEventHandler {
     public void onPlayerDamage(LivingDamageEvent e) {
         // TODO: implement damage handling mist and is holy water (idk what should happen)
     }
-    @SubscribeEvent
-    public void onToolTip(ItemTooltipEvent e) {
-        if(e.getEntity() == null)
-            return;
-        if(VampirismAPI.getVampirePlayer(e.getEntity()).isPresent()) {
-            int blood = BloodConversionRegistry.getImpureBloodValue(e.getItemStack().getItem());
-            int bloodBarsFilledEaten = 0;
-            if ((e.getItemStack().getItem() instanceof VampirismItemBloodFoodItem vampFoodItem)) {
-                bloodBarsFilledEaten = ((IVampirismItemBloodFoodAccessor)vampFoodItem).getVampireFood().getNutrition() / 2;
-            }
-            if (blood>0 && Screen.hasShiftDown()) {
-                e.getToolTip().add(1,Component.translatable("tooltips.smallbats.itembloodvalue",blood,(bloodBarsFilledEaten == 0 ? "-" :  String.valueOf(bloodBarsFilledEaten))).withStyle(ChatFormatting.DARK_RED));
-            }
-        }
-    }
 
     @SubscribeEvent
     public void onEntityEventSize(EntityEvent.Size e) {
@@ -108,7 +74,6 @@ public class GameEventHandler {
 
     @SubscribeEvent
     public void onAttachCapability(AttachCapabilitiesEvent<Entity> e) {
-        // ModSmallBats.INSTANCE.Logger.info("we attach data: " + e.getObject());
         if(e.getObject() instanceof Player) {
             e.addCapability(SmallBatsPlayerCapabilityProvider.SMALLBATS_PLAYER_CAP_LOC, new SmallBatsPlayerCapabilityProvider());
         }

@@ -1,9 +1,12 @@
 package me.mc.mods.smallbats.eventhandler;
 
+import de.teamlapen.vampirism.api.VampirismAPI;
 import me.mc.mods.smallbats.util.MathUtils;
 import me.mc.mods.smallbats.vampire.actions.MistShapeAction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -27,7 +30,7 @@ public class ClientGameEventHandler {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public void onRenderLivingEvent(RenderLivingEvent.Pre<Player, PlayerModel<Player>> e) {
+    public void onRenderLivingEventPre(RenderLivingEvent.Pre<Player, PlayerModel<Player>> e) {
         if(e.getEntity() instanceof Player p) {
             if (MistShapeAction.isMistShape(p)) {
                 e.setCanceled(true);
@@ -44,6 +47,34 @@ public class ClientGameEventHandler {
                     spawnMistParticlesAt(l,e.getEntity().position());
                 }
             }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public void onRenderLivingEventPost(RenderLivingEvent.Post<Player, PlayerModel<Player>> e) {
+        if (e.getEntity() instanceof Player p) {
+            VampirismAPI.getVampirePlayer(p).ifPresent(player -> {
+                int ticksInSun = player.getTicksInSun();
+                if (ticksInSun == 0 || player.isIgnoringSundamage() || p.isCreative() || p.isSpectator()) { return; }
+                int fireTicks = Math.max(1,ticksInSun - 20*30) * 10;
+
+                if (p.level().getGameTime() % fireTicks == 0) {
+                    RandomSource r = p.level().getRandom();
+                    double rX = r.nextDouble() * p.getBbWidth() * (r.nextBoolean() ? 1 : -1) / 2d;
+                    double rY = r.nextDouble() * p.getBbHeight();
+                    double rZ = r.nextDouble() * p.getBbWidth() * (r.nextBoolean() ? 1 : -1) / 2d;
+
+
+                    final double speedFactor = 0.02d;
+                    e.getEntity().level().addParticle(ParticleTypes.SMALL_FLAME,
+                            e.getEntity().getX() + rX,
+                            e.getEntity().getY() + rY,
+                            e.getEntity().getZ() + rZ,
+                            r.nextDouble() * speedFactor * (r.nextBoolean() ? 1 : -1), r.nextDouble() * speedFactor, r.nextDouble() * speedFactor * (r.nextBoolean() ? 1 : -1)
+                    );
+                }
+            });
         }
     }
 
