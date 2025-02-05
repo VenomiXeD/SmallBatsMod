@@ -9,6 +9,7 @@
     "LivingEntityMixin",
     "ModPlayerEventHandlerMixin",
     "PlayerMixin",
+    "PureBloodItemMixin",
     "VampirismItemBloodFoodItemMixin"
   ],
   "client": [

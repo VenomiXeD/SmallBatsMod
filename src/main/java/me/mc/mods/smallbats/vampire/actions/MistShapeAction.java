@@ -56,7 +56,6 @@ public class MistShapeAction implements ILastingAction<IVampirePlayer> {
 
     @Override
     public boolean onActivated(IVampirePlayer player, ActivationContext context) {
-        Player e = player.getRepresentingPlayer();
         updatePlayer(player, true);
         return true;
     }
@@ -95,36 +94,6 @@ public class MistShapeAction implements ILastingAction<IVampirePlayer> {
 
     @Override
     public boolean onUpdate(IVampirePlayer player) {
-        /*
-        Player e = player.getRepresentingPlayer();
-        if (!e.level().isClientSide()) {
-            for (int i = 0; i < 50; i++) {
-                Vec3 particlePos = MathUtils.randomSpherePositions(e.level().getRandom(), e.position(), 0.5f);
-                double x = particlePos.x;
-                double y = particlePos.y;
-                double z = particlePos.z;
-
-                ClientboundLevelParticlesPacket particlesPacket = new ClientboundLevelParticlesPacket(PARTICLE_MISTEFFECT, true, x, y, z, 1f, 1f, 1f, 1f, 1);
-                for (Player p : e.level().players()) {
-                    if (!p.is(e)) {
-                        ((ServerPlayer) p).connection.send(particlesPacket);
-                    }
-                }
-            }
-        }
-        else {
-            // Minecraft should be available here
-            if(!Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
-                Vec3 particlePos = MathUtils.randomSpherePositions(e.level().getRandom(), e.position(), 0.5f);
-                double x = particlePos.x;
-                double y = particlePos.y;
-                double z = particlePos.z;
-
-
-                e.level().addParticle(PARTICLE_MISTEFFECT, x, y, z, 0, 0, 0);
-            }
-        }
-        */
         if (player.isGettingSundamage(player.getRepresentingPlayer().level())) {
             updatePlayer(player, false);
             return true;
@@ -146,7 +115,10 @@ public class MistShapeAction implements ILastingAction<IVampirePlayer> {
         player.getAbilities().mayBuild = !activated;
         player.setForcedPose(activated ? Pose.STANDING : null);
 
-        cap.ifPresent(c->c.sync(player));
+        // Only send sync packet if we're on server
+        if (!p.isRemote()) {
+            cap.ifPresent(c -> c.sync(player));
+        }
 
         player.refreshDimensions();
         player.onUpdateAbilities();
