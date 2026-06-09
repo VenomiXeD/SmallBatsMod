@@ -14,21 +14,24 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SmallBatsPlayerCapabilityProvider implements ISynchronizableCapabilityProvider, ICapabilityProvider, INBTSerializable<CompoundTag> {
-    public static Capability<ISmallBatsPlayerCapability> SMALLBATS_PLAYER_CAP = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final ResourceLocation SMALLBATS_PLAYER_CAP_LOC = new ResourceLocation(ModSmallBats.MODID, "playercap");
+    public static Capability<ISmallBatsPlayerCapability> SMALLBATS_PLAYER_CAP = CapabilityManager.get(new CapabilityToken<>() {
+    });
+    private ISmallBatsPlayerCapability INSTANCE;
+    private final LazyOptional<ISmallBatsPlayerCapability> opt = LazyOptional.of(this::getInstance);
+
     public Capability<ISmallBatsPlayerCapability> cap() {
         return SMALLBATS_PLAYER_CAP;
     }
 
-    public static final ResourceLocation SMALLBATS_PLAYER_CAP_LOC = new ResourceLocation(ModSmallBats.MODID,"cap");
-    private ISmallBatsPlayerCapability INSTANCE;
-    private final LazyOptional<ISmallBatsPlayerCapability> opt = LazyOptional.of(this::getInstance);
     private ISmallBatsPlayerCapability getInstance() {
         if (INSTANCE == null) INSTANCE = new SmallBatsPlayerCapability();
         return INSTANCE;
     }
+
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        return SMALLBATS_PLAYER_CAP.orEmpty(cap,opt);
+        return SMALLBATS_PLAYER_CAP.orEmpty(cap, opt);
     }
 
     @Override

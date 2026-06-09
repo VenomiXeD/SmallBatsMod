@@ -22,10 +22,11 @@ public class BatSleepAction implements ILastingAction<IVampirePlayer>, IAction<I
     public static boolean isSleepingAsBat(Player p) {
         LazyOptional<IVampirePlayer> vampirePlayer = VampirismAPI.getVampirePlayer(p);
         if (vampirePlayer.isPresent()) {
-           return vampirePlayer.resolve().get().getActionHandler().isActionActive(SmallBatsVampireActions.BATSLEEP.get()) ;
+            return vampirePlayer.resolve().get().getActionHandler().isActionActive(SmallBatsVampireActions.BATSLEEP.get());
         }
         return false;
     }
+
     @Override
     public PERM canUse(IVampirePlayer player) {
         return player.getRepresentingPlayer().level().isDay() && VerticalCollisionUtil.verticalCollisionUp(player.getRepresentingEntity()) ? PERM.ALLOWED : PERM.DISALLOWED;
@@ -55,7 +56,7 @@ public class BatSleepAction implements ILastingAction<IVampirePlayer>, IAction<I
             if (isOnCeiling) {
                 BlockPos pos = player.getRepresentingEntity().blockPosition();
                 player.getRepresentingPlayer().startSleeping(pos);
-                ((ServerLevel)player.getRepresentingPlayer().level()).updateSleepingPlayerList();
+                ((ServerLevel) player.getRepresentingPlayer().level()).updateSleepingPlayerList();
                 return true;
             }
         }
@@ -64,7 +65,7 @@ public class BatSleepAction implements ILastingAction<IVampirePlayer>, IAction<I
 
     @Override
     public int getDuration(IVampirePlayer player) {
-        return 20*10;
+        return 20 * 10;
     }
 
     @Override
@@ -89,7 +90,7 @@ public class BatSleepAction implements ILastingAction<IVampirePlayer>, IAction<I
 
     @Override
     public boolean onUpdate(IVampirePlayer player) {
-        if(!player.getRepresentingPlayer().level().isClientSide()) {
+        if (!player.getRepresentingPlayer().level().isClientSide()) {
             return player.getRepresentingPlayer().level().isNight();
         }
         return Screen.hasShiftDown();

@@ -31,20 +31,19 @@ public class ClientGameEventHandler {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onRenderLivingEventPre(RenderLivingEvent.Pre<Player, PlayerModel<Player>> e) {
-        if(e.getEntity() instanceof Player p) {
+        if (e.getEntity() instanceof Player p) {
             if (MistShapeAction.isMistShape(p)) {
                 e.setCanceled(true);
 
                 Level l = e.getEntity().level();
 
-                if(e.getEntity().is(Minecraft.getInstance().player)) {
+                if (e.getEntity().is(Minecraft.getInstance().player)) {
                     // Own entity, check if we in first person
                     if (!Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
-                        spawnMistParticlesAt(l,e.getEntity().position());
+                        spawnMistParticlesAt(l, e.getEntity().position());
                     }
-                }
-                else {
-                    spawnMistParticlesAt(l,e.getEntity().position());
+                } else {
+                    spawnMistParticlesAt(l, e.getEntity().position());
                 }
             }
         }
@@ -56,8 +55,10 @@ public class ClientGameEventHandler {
         if (e.getEntity() instanceof Player p) {
             VampirismAPI.getVampirePlayer(p).ifPresent(player -> {
                 int ticksInSun = player.getTicksInSun();
-                if (ticksInSun == 0 || player.isIgnoringSundamage() || p.isCreative() || p.isSpectator()) { return; }
-                int fireTicks = Math.max(1,ticksInSun - 20*30) * 10;
+                if (ticksInSun == 0 || player.isIgnoringSundamage() || p.isCreative() || p.isSpectator()) {
+                    return;
+                }
+                int fireTicks = Math.max(1, ticksInSun - 20 * 30) * 10;
 
                 if (p.level().getGameTime() % fireTicks == 0) {
                     RandomSource r = p.level().getRandom();

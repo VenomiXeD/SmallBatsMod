@@ -21,19 +21,21 @@ import java.util.Optional;
 
 public class MistShapeAction implements ILastingAction<IVampirePlayer> {
 
-    public static final EntityDimensions MIST_DIMENSIONS = EntityDimensions.fixed(0.25f,0.25f);
+    public static final EntityDimensions MIST_DIMENSIONS = EntityDimensions.fixed(0.25f, 0.25f);
     public static final DustColorTransitionOptions PARTICLE_MISTEFFECT = new DustColorTransitionOptions(
-            new Vector3f(0.22f,0.22f,0.22f),
-            new Vector3f(0.15f,0.15f,0.15f),
+            new Vector3f(0.22f, 0.22f, 0.22f),
+            new Vector3f(0.15f, 0.15f, 0.15f),
             2
     );
+
     public static boolean isMistShape(Player p) {
         LazyOptional<IVampirePlayer> vampirePlayer = VampirismAPI.getVampirePlayer(p);
         if (vampirePlayer.isPresent()) {
-           return vampirePlayer.resolve().get().getActionHandler().isActionActive(SmallBatsVampireActions.MISTFORM.get()) ;
+            return vampirePlayer.resolve().get().getActionHandler().isActionActive(SmallBatsVampireActions.MISTFORM.get());
         }
         return false;
     }
+
     @Override
     public PERM canUse(IVampirePlayer player) {
         return player.getActionHandler().isActionActive(VampireActions.BAT.get()) ? PERM.DISALLOWED : PERM.ALLOWED;
@@ -68,7 +70,7 @@ public class MistShapeAction implements ILastingAction<IVampirePlayer> {
     @Override
     public void onActivatedClient(IVampirePlayer player) {
         // ModSmallBats.INSTANCE.Logger.info("side: " + player.getRepresentingPlayer().level().isClientSide());
-        player.getRepresentingPlayer().refreshDimensions();;
+        player.getRepresentingPlayer().refreshDimensions();
     }
 
     @Override
@@ -76,9 +78,8 @@ public class MistShapeAction implements ILastingAction<IVampirePlayer> {
         if (!player.isRemote()) {
             // Player e = player.getRepresentingPlayer();
             updatePlayer(player, false);
-        }
-        else {
-            player.getRepresentingPlayer().refreshDimensions();;
+        } else {
+            player.getRepresentingPlayer().refreshDimensions();
         }
     }
 
@@ -104,7 +105,7 @@ public class MistShapeAction implements ILastingAction<IVampirePlayer> {
     void updatePlayer(IVampirePlayer p, boolean activated) {
         Player player = p.getRepresentingPlayer();
         LazyOptional<ISmallBatsPlayerCapability> cap = player.getCapability(SmallBatsPlayerCapabilityProvider.SMALLBATS_PLAYER_CAP);
-        cap.ifPresent(c->{
+        cap.ifPresent(c -> {
             c.setIsMist(activated);
         });
 

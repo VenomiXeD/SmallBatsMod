@@ -12,6 +12,6 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class SmallBatsVampireActions {
     public static final DeferredRegister<IAction<IVampirePlayer>> VAMPIRE_ACTIONS = DeferredRegister.create(VampirismRegistries.ACTIONS_ID.location(), ModSmallBats.MODID);
-    public static final RegistryObject<ILastingAction<IVampirePlayer>> BATSLEEP = VAMPIRE_ACTIONS.register("batsleep",BatSleepAction::new);
+    public static final RegistryObject<ILastingAction<IVampirePlayer>> BATSLEEP = VAMPIRE_ACTIONS.register("batsleep", BatSleepAction::new);
     public static final RegistryObject<ILastingAction<IVampirePlayer>> MISTFORM = VAMPIRE_ACTIONS.register("mistform", MistShapeAction::new);
 }

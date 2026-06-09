@@ -12,11 +12,12 @@ import java.util.function.Predicate;
 
 @Mixin(value = PureBloodItem.class, remap = false)
 public abstract class PureBloodItemMixin {
-	@Shadow public abstract int getLevel();
+    @Shadow
+    public abstract int getLevel();
 
-	// Re-enables the ability to drink pure blood - higher levels allows you to consume pure blood of higher purity.
-	@Redirect(method = "use", at = @At(value = "INVOKE", target = "Ljava/util/Optional;filter(Ljava/util/function/Predicate;)Ljava/util/Optional;"))
-	public Optional<VampireLeveling.AltarInfusionRequirements> modifyConsumptionFilterLevelRequirement(Optional<VampireLeveling.AltarInfusionRequirements> instance, Predicate<? super VampireLeveling.AltarInfusionRequirements> predicate) {
-		return instance.filter(x->x.pureBloodLevel()>=this.getLevel());
-	}
+    // Re-enables the ability to drink pure blood - higher levels allows you to consume pure blood of higher purity.
+    @Redirect(method = "use", at = @At(value = "INVOKE", target = "Ljava/util/Optional;filter(Ljava/util/function/Predicate;)Ljava/util/Optional;"))
+    public Optional<VampireLeveling.AltarInfusionRequirements> modifyConsumptionFilterLevelRequirement(Optional<VampireLeveling.AltarInfusionRequirements> instance, Predicate<? super VampireLeveling.AltarInfusionRequirements> predicate) {
+        return instance.filter(x -> x.pureBloodLevel() >= this.getLevel());
+    }
 }

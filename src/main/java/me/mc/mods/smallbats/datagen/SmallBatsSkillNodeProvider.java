@@ -33,9 +33,9 @@ public class SmallBatsSkillNodeProvider extends SkillNodeProvider {
     @Override
     protected void registerSkillNodes(@NotNull Consumer<FinishedSkillNode> consumer) {
         // Depends on fledgling
-        SkillNodeBuilder.vampire(new ResourceLocation("vampirism","vampire/skill4"), SmallBatsVampireSkills.BATSLEEP_SKILL.get()).build(consumer, new ResourceLocation(ModSmallBats.MODID,"batsleep"));
+        SkillNodeBuilder.vampire(new ResourceLocation("vampirism", "vampire/skill4"), SmallBatsVampireSkills.BATSLEEP_SKILL.get()).build(consumer, new ResourceLocation(ModSmallBats.MODID, "batsleep"));
         // Depends on invisibility
-        SkillNodeBuilder.vampire(new ResourceLocation("vampirism","vampire/util6"), SmallBatsVampireSkills.MISTSHAPE_SKILL.get()).build(consumer, new ResourceLocation(ModSmallBats.MODID,"mistform"));
+        SkillNodeBuilder.vampire(new ResourceLocation("vampirism", "vampire/util6"), SmallBatsVampireSkills.MISTSHAPE_SKILL.get()).build(consumer, new ResourceLocation(ModSmallBats.MODID, "mistform"));
     }
 
     @Override

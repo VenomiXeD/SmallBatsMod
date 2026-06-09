@@ -2,13 +2,16 @@ package me.mc.mods.smallbats.eventhandler;
 
 import de.teamlapen.vampirism.api.VampirismAPI;
 import de.teamlapen.vampirism.api.entity.player.vampire.IVampirePlayer;
+import de.teamlapen.vampirism.api.event.PlayerFactionEvent;
 import de.teamlapen.vampirism.entity.player.VampirismPlayerAttributes;
+import me.mc.mods.smallbats.ModSmallBats;
+import me.mc.mods.smallbats.caps.SmallBatsLevelCapabilityProvider;
 import me.mc.mods.smallbats.caps.SmallBatsPlayerCapabilityProvider;
 import me.mc.mods.smallbats.vampire.SmallBatsVampireActions;
 import me.mc.mods.smallbats.vampire.actions.MistShapeAction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -20,7 +23,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @SuppressWarnings("removal")
-public class GameEventHandler {
+public class SmallBatsGameEventHandler {
     @SubscribeEvent
     public void onSleepingLocationCheckEvent(SleepingLocationCheckEvent e) {
         if (e.getEntity() instanceof Player player) {
@@ -34,7 +37,7 @@ public class GameEventHandler {
         if (event.getLevel() instanceof ServerLevel && ((ServerLevel) event.getLevel()).isDay()) {
             boolean sleepingAsBat = event.getLevel().players().stream().anyMatch(player -> {
                 LazyOptional<IVampirePlayer> vampPlayer = VampirismAPI.getVampirePlayer(player);
-                if(vampPlayer.isPresent()) {
+                if (vampPlayer.isPresent()) {
                     return vampPlayer.resolve().get().getActionHandler().isActionActive(SmallBatsVampireActions.BATSLEEP.get());
                 }
                 return false;
@@ -45,6 +48,7 @@ public class GameEventHandler {
             }
         }
     }
+
     @SubscribeEvent
     public void onPlayerDamage(LivingDamageEvent e) {
         // TODO: implement damage handling mist and is holy water (idk what should happen)
@@ -63,9 +67,41 @@ public class GameEventHandler {
     }
 
     @SubscribeEvent
-    public void onAttachCapability(AttachCapabilitiesEvent<Entity> e) {
-        if(e.getObject() instanceof Player) {
+    public void onPlayerLevelChange(PlayerFactionEvent.FactionLevelChangePre e) {
+        Player p = e.getPlayer().getPlayer();
+        if (e.getPlayer().getLordFaction() != null) {
+            if (e.getPlayer().getLordFaction().getHighestLordLevel() == e.getNewLevel()) {
+                p.level().getCapability(SmallBatsLevelCapabilityProvider.SMALL_BATS_LEVEL_CAP).ifPresent(cap -> {
+                    if (cap.worldHasLordWithLevel(e.getNewLevel())) {
+                        e.setCanceled(true);
+
+                        ModSmallBats.INSTANCE.Logger.info("Cancelled level change");
+                    }
+                });
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerLevelChange(PlayerFactionEvent.FactionLevelChanged e) {
+        Player p = e.getPlayer().getPlayer();
+        if (e.getPlayer().getLordFaction() != null) {
+            p.level().getCapability(SmallBatsLevelCapabilityProvider.SMALL_BATS_LEVEL_CAP).ifPresent(cap -> {
+                cap.worldNewLordPlayer(p, e.getNewLevel());
+
+                ModSmallBats.INSTANCE.Logger.info("New Level Changed: " + e.getNewLevel());
+            });
+        }
+    }
+
+
+    @SubscribeEvent
+    public void onAttachCapability(AttachCapabilitiesEvent e) {
+        if (e.getObject() instanceof Player) {
             e.addCapability(SmallBatsPlayerCapabilityProvider.SMALLBATS_PLAYER_CAP_LOC, new SmallBatsPlayerCapabilityProvider());
+        }
+        if (e.getObject() instanceof ServerLevel l && l.dimension() == Level.OVERWORLD) {
+            e.addCapability(SmallBatsLevelCapabilityProvider.SMALLBATS_LEVEL_CAP_LOC, new SmallBatsLevelCapabilityProvider());
         }
     }
 }

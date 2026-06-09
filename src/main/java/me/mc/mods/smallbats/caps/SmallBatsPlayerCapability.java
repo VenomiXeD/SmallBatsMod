@@ -29,8 +29,8 @@ public class SmallBatsPlayerCapability implements ISmallBatsPlayerCapability {
     @Override
     public CompoundTag serializerNBT() {
         CompoundTag t = new CompoundTag();
-        t.putBoolean("mist",getIsMist());
-        t.putBoolean("ceilinghanging",getIsCeilingHanging());
+        t.putBoolean("mist", getIsMist());
+        t.putBoolean("ceilinghanging", getIsCeilingHanging());
         return t;
     }
 

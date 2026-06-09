@@ -19,7 +19,7 @@ public abstract class ModPlayerEventHandlerMixin {
     public void sleepTimeCheck(SleepingTimeCheckEvent event, CallbackInfo ci) {
         // Obtain the vampire player object
         Optional<IVampirePlayer> vampPlayer = VampirismAPI.getVampirePlayer(event.getEntity()).resolve();
-        if(vampPlayer.isPresent()) {
+        if (vampPlayer.isPresent()) {
             // Check if the ability is enabled
             boolean isBatSleeping = vampPlayer.get().getActionHandler().isActionActive(SmallBatsVampireActions.BATSLEEP.get());
             boolean isDay = event.getEntity().level().isDay();

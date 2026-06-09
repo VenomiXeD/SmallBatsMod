@@ -20,20 +20,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BlockBehaviour.BlockStateBase.class)
 public abstract class BlockBehaviorBlockStateBaseMixin {
-    @Shadow public abstract VoxelShape getCollisionShape(BlockGetter pLevel, BlockPos pPos);
-
-    @Shadow public abstract boolean isCollisionShapeFullBlock(BlockGetter pLevel, BlockPos pPos);
-
-    @Shadow public abstract boolean is(TagKey<Block> pTag);
-
     private static final VoxelShape NoCollision = Shapes.empty();
+
+    @Shadow
+    public abstract VoxelShape getCollisionShape(BlockGetter pLevel, BlockPos pPos);
+
+    @Shadow
+    public abstract boolean isCollisionShapeFullBlock(BlockGetter pLevel, BlockPos pPos);
+
+    @Shadow
+    public abstract boolean is(TagKey<Block> pTag);
 
     @Inject(method = "getCollisionShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;", at = @At("RETURN"), cancellable = true)
     public void getCollisionShape(BlockGetter pLevel, BlockPos pPos, CollisionContext pContext, CallbackInfoReturnable<VoxelShape> cir) {
-        if (pContext instanceof EntityCollisionContext) {
-            Entity e = ((EntityCollisionContext)pContext).getEntity();
+        if (pContext instanceof EntityCollisionContext entityCollisionCtx) {
+            Entity e = entityCollisionCtx.getEntity();
             if (e instanceof Player) {
-                if(!isCollisionShapeFullBlock(pLevel,pPos) && MistShapeAction.isMistShape((Player)e)) {
+                if (!isCollisionShapeFullBlock(pLevel, pPos) && MistShapeAction.isMistShape((Player) e)) {
                     cir.setReturnValue(NoCollision);
                 }
             }

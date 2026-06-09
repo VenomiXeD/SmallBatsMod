@@ -12,13 +12,13 @@ import java.util.Collection;
 import java.util.Optional;
 
 public class BatSleepSkill extends VampirismSkill<IVampirePlayer> {
+    public BatSleepSkill(int skillPointCost, boolean desc) {
+        super(skillPointCost, desc);
+    }
+
     @Override
     protected void getActions(Collection<IAction<IVampirePlayer>> list) {
         list.add(SmallBatsVampireActions.BATSLEEP.get());
-    }
-
-    public BatSleepSkill(int skillPointCost, boolean desc) {
-        super(skillPointCost, desc);
     }
 
     @Override

@@ -41,7 +41,7 @@ public abstract class RenderHandlerMixin {
         LazyOptional<ISmallBatsPlayerCapability> cap = player.getCapability(SmallBatsPlayerCapabilityProvider.SMALLBATS_PLAYER_CAP);
 
         if (VerticalCollisionUtil.verticalCollisionUp(event.getEntity())) {
-            cap.ifPresent(e->e.setIsCeilingHanging(true));
+            cap.ifPresent(e -> e.setIsCeilingHanging(true));
 
             entityBat.setResting(true);
 
@@ -59,8 +59,8 @@ public abstract class RenderHandlerMixin {
             entityBat.xRotO *= -1;
 
         } else {
-            cap.ifPresent(e->{
-                if(e.getIsCeilingHanging()) {
+            cap.ifPresent(e -> {
+                if (e.getIsCeilingHanging()) {
                     e.setIsCeilingHanging(false);
                     event.getEntity().level().playSound(event.getEntity(),
                             event.getEntity().blockPosition(),

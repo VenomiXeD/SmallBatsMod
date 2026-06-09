@@ -12,13 +12,13 @@ import java.util.Collection;
 import java.util.Optional;
 
 public class MistShapeSkill extends VampirismSkill<IVampirePlayer> {
+    public MistShapeSkill(int skillPointCost, boolean desc) {
+        super(skillPointCost, desc);
+    }
+
     @Override
     protected void getActions(Collection<IAction<IVampirePlayer>> list) {
         list.add(SmallBatsVampireActions.MISTFORM.get());
-    }
-
-    public MistShapeSkill(int skillPointCost, boolean desc) {
-        super(skillPointCost, desc);
     }
 
     @Override

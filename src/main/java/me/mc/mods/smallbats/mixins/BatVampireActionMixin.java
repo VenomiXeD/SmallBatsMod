@@ -9,6 +9,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(value = BatVampireAction.class, remap = false)
 public abstract class BatVampireActionMixin {
-    @Shadow @Final @Mutable
-    public static final EntityDimensions BAT_SIZE = EntityDimensions.fixed(0.6f,0.875f);
+    @Shadow
+    @Final
+    @Mutable
+    public static final EntityDimensions BAT_SIZE = EntityDimensions.fixed(0.6f, 0.875f);
 }

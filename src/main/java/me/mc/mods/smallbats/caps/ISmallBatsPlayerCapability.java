@@ -4,13 +4,15 @@ import me.mc.mods.smallbats.network.PacketSynchronizeCapability;
 import net.minecraft.world.entity.Entity;
 
 public interface ISmallBatsPlayerCapability extends ISmallBatsBaseCapability {
-    public boolean getIsMist();
-    public void setIsMist(boolean mist);
+    boolean getIsMist();
 
-    public boolean getIsCeilingHanging();
-    public void setIsCeilingHanging(boolean isHanging);
+    void setIsMist(boolean mist);
 
-    public default void sync(Entity thisCapBelongsToThisEntityToSync) {
+    boolean getIsCeilingHanging();
+
+    void setIsCeilingHanging(boolean isHanging);
+
+    default void sync(Entity thisCapBelongsToThisEntityToSync) {
         PacketSynchronizeCapability.dispatchCapabilitySynchronization(this.serializerNBT(), this.getUnderlyingCapabilityProvider(), thisCapBelongsToThisEntityToSync);
     }
 }

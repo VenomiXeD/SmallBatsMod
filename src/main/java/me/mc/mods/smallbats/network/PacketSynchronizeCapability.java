@@ -13,26 +13,21 @@ import net.minecraftforge.network.PacketDistributor;
 import java.util.function.Supplier;
 
 public class PacketSynchronizeCapability {
-    public String getCapClassName() {
-        return capClassName;
-    }
-
-    public CompoundTag getCapTag() {
-        return capTag;
-    }
-
     private String capClassName;
     private int capClassNameLength;
     private int entityIDCapBelongsTo;
     private CompoundTag capTag;
+
     public PacketSynchronizeCapability() {
     }
+
     public PacketSynchronizeCapability(CompoundTag tagsForCap, Class<? extends ISynchronizableCapabilityProvider> capabilityProviderClass, Entity entityCapBelongsToSynchronize) {
         capClassName = capabilityProviderClass.getName();
         capClassNameLength = capClassName.length();
         entityIDCapBelongsTo = entityCapBelongsToSynchronize.getId();
         capTag = tagsForCap;
     }
+
     public static void encode(PacketSynchronizeCapability msg, FriendlyByteBuf buf) {
         // Write the class name so it can be reconstructed later
         buf.writeInt(msg.capClassNameLength);
@@ -43,10 +38,6 @@ public class PacketSynchronizeCapability {
 
         // Write the tag data
         buf.writeNbt(msg.capTag);
-    }
-
-    public int getEntityIDCapBelongsTo() {
-        return entityIDCapBelongsTo;
     }
 
     public static PacketSynchronizeCapability decode(FriendlyByteBuf buf) {
@@ -72,9 +63,21 @@ public class PacketSynchronizeCapability {
     }
 
     public static void handle(PacketSynchronizeCapability msg, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(()->
-                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()->()->ClientBoundSynchronizeCapability.handle(msg, ctx))
+        ctx.get().enqueueWork(() ->
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientBoundSynchronizeCapability.handle(msg, ctx))
         );
         ctx.get().setPacketHandled(true);
+    }
+
+    public String getCapClassName() {
+        return capClassName;
+    }
+
+    public CompoundTag getCapTag() {
+        return capTag;
+    }
+
+    public int getEntityIDCapBelongsTo() {
+        return entityIDCapBelongsTo;
     }
 }
